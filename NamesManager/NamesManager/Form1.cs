@@ -2,6 +2,7 @@
 using NamesManager.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -20,6 +21,7 @@ namespace NamesManager
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
+            this.MinimumSize = new Size(600, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 

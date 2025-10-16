@@ -20,6 +20,7 @@ namespace NamesManager.Forms
             filterNames.Items.AddRange(filters.ToArray());
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
+            this.MinimumSize = new Size(600, 400);
             this.StartPosition = FormStartPosition.CenterParent;
         }
 
