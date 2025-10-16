@@ -32,3 +32,6 @@ C:\הכשרה 8200\NameManager\NamesManager\NamesManager\bin\Debug\System.ValueT
 C:\הכשרה 8200\NameManager\NamesManager\NamesManager\obj\Debug\NamesMan.128FFA3B.Up2Date
 C:\הכשרה 8200\NameManager\NamesManager\NamesManager\obj\Debug\NamesManager.exe
 C:\הכשרה 8200\NameManager\NamesManager\NamesManager\obj\Debug\NamesManager.pdb
+C:\הכשרה 8200\NameManager\NamesManager\NamesManager\bin\Debug\Form1.resx
+C:\הכשרה 8200\NameManager\NamesManager\NamesManager\bin\Debug\Form1.cs
+C:\הכשרה 8200\NameManager\NamesManager\NamesManager\bin\Debug\Form1.Designer.cs
