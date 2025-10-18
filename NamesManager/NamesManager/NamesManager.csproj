@@ -78,9 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\JsonFile.cs" />
-    <Compile Include="Class\PeopleRepository.cs" />
+    <Compile Include="Class\Repository.cs" />
     <Compile Include="Class\Person.cs" />
-    <Compile Include="Interface\IPeopleRepository.cs" />
+    <Compile Include="Interface\IRepository.cs" />
     <Compile Include="Interface\ISource.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

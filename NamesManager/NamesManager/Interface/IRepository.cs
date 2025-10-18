@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace NamesManager.Interface
 {
-    public interface IPeopleRepository
+    public interface IRepository <T>
     {
-        List<Person> GetAllPeople();
-        void AddPerson(Person person);
-        void SetPeople(List<Person> people);
+        List<T> GetAll();
+        void Add(T obj);
+        void Set(List<T> obj);
 
     }
 }

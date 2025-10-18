@@ -14,15 +14,15 @@ namespace NamesManager
 {
     public partial class names : Form
     {
-        private IPeopleRepository peopleRepository; 
+        private IRepository<Person> repository; 
         private string sourcePath; 
-        private ISource source;
+        private ISource<Person> source;
         public names()
         {
             InitializeComponent();
             sourcePath = "people.json";
-            source = new JsonFile(sourcePath);
-            peopleRepository = new PeopleRepository();
+            source = new JsonFile<Person>(sourcePath);
+            repository = new Repository<Person>();
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
             this.MinimumSize = new Size(600, 400);
@@ -32,13 +32,13 @@ namespace NamesManager
 
         private void names_Load(object sender, EventArgs e)
         {
-            peopleRepository.SetPeople(source.Read());
+            repository.Set(source.Read());
             RefreshListBox();
         }
 
         private void names_FormClosing(object sender, FormClosingEventArgs e)
         {
-            source.Write(peopleRepository.GetAllPeople().Cast<Object>().ToList());
+            source.Write(repository.GetAll());
         }
 
         private void addName_Click(object sender, EventArgs e)
@@ -48,12 +48,12 @@ namespace NamesManager
                 MessageBox.Show("הקלד שם!", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
-                if (peopleRepository.GetAllPeople().Any(p => p.FirstName.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                if (repository.GetAll().Any(p => p.FirstName.Equals(name, StringComparison.OrdinalIgnoreCase)))
                 {
                     MessageBox.Show("השם כבר קיים ברשימה!", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                peopleRepository.AddPerson(new Person { FirstName = name });
+                repository.Add(new Person { FirstName = name });
                 SortPeople();
                 RefreshListBox();
                 nameInput.Clear();
@@ -66,7 +66,7 @@ namespace NamesManager
             if (namesLst.SelectedItem != null)
             {
                 string selected = namesLst.SelectedItem.ToString();
-                peopleRepository.GetAllPeople().RemoveAll(p => p.FirstName == selected);
+                repository.GetAll().RemoveAll(p => p.FirstName == selected);
                 RefreshListBox();
             }
             else
@@ -76,7 +76,7 @@ namespace NamesManager
         private void resolveName_Click(object sender, EventArgs e)
         {
             string partial = nameInput.Text.Trim();
-            var matches = peopleRepository.GetAllPeople().Where(p => p.FirstName.StartsWith(partial, StringComparison.OrdinalIgnoreCase)).Select(p => p.FirstName).ToList();
+            var matches = repository.GetAll().Where(p => p.FirstName.StartsWith(partial, StringComparison.OrdinalIgnoreCase)).Select(p => p.FirstName).ToList();
 
             if (matches.Count == 1)
             {
@@ -98,13 +98,13 @@ namespace NamesManager
 
         private void SortPeople()
         {
-            peopleRepository.SetPeople(peopleRepository.GetAllPeople().OrderBy(p => p.FirstName).ToList());
+            repository.Set(repository.GetAll().OrderBy(p => p.FirstName).ToList());
         }
 
         private void RefreshListBox()
         {
             namesLst.Items.Clear();
-            foreach (var person in peopleRepository.GetAllPeople())
+            foreach (var person in repository.GetAll())
             {
                 namesLst.Items.Add(person.FirstName);
             }

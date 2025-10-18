@@ -7,9 +7,9 @@ using NamesManager.Class;
 
 namespace NamesManager.Interface
 {
-    public interface ISource
+    public interface ISource<T>
     {
-         List<Person> Read();
-         void Write(List<Object> objects);
+         List<T> Read();
+         void Write(List<T> objects);
     }
 }
