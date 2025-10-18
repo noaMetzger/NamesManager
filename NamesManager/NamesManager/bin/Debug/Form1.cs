@@ -8,37 +8,37 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using NamesManager.Interface;
 
 namespace NamesManager
 {
     public partial class names : Form
     {
-        private List<Person> people = new List<Person>();
-        private string filePath = "people.json";
-
+        private IPeopleRepository peopleRepository; 
+        private string sourcePath; 
+        private ISource source;
         public names()
         {
             InitializeComponent();
+            sourcePath = "people.json";
+            source = new JsonFile(sourcePath);
+            peopleRepository = new PeopleRepository();
             this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = true;
             this.MinimumSize = new Size(600, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
+
         }
 
         private void names_Load(object sender, EventArgs e)
         {
-            if (File.Exists(filePath))
-            {
-                string json = File.ReadAllText(filePath);
-                people = JsonSerializer.Deserialize<List<Person>>(json);
-                RefreshListBox();
-            }
+            peopleRepository.SetPeople(source.Read());
+            RefreshListBox();
         }
 
         private void names_FormClosing(object sender, FormClosingEventArgs e)
         {
-            string json = JsonSerializer.Serialize(people);
-            File.WriteAllText(filePath, json);
+            source.Write(peopleRepository.GetAllPeople().Cast<Object>().ToList());
         }
 
         private void addName_Click(object sender, EventArgs e)
@@ -48,12 +48,12 @@ namespace NamesManager
                 MessageBox.Show("הקלד שם!", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
-                if (people.Any(p => p.FirstName.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                if (peopleRepository.GetAllPeople().Any(p => p.FirstName.Equals(name, StringComparison.OrdinalIgnoreCase)))
                 {
                     MessageBox.Show("השם כבר קיים ברשימה!", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                people.Add(new Person { FirstName = name });
+                peopleRepository.AddPerson(new Person { FirstName = name });
                 SortPeople();
                 RefreshListBox();
                 nameInput.Clear();
@@ -66,7 +66,7 @@ namespace NamesManager
             if (namesLst.SelectedItem != null)
             {
                 string selected = namesLst.SelectedItem.ToString();
-                people.RemoveAll(p => p.FirstName == selected);
+                peopleRepository.GetAllPeople().RemoveAll(p => p.FirstName == selected);
                 RefreshListBox();
             }
             else
@@ -76,7 +76,7 @@ namespace NamesManager
         private void resolveName_Click(object sender, EventArgs e)
         {
             string partial = nameInput.Text.Trim();
-            var matches = people.Where(p => p.FirstName.StartsWith(partial, StringComparison.OrdinalIgnoreCase)).Select(p => p.FirstName).ToList();
+            var matches = peopleRepository.GetAllPeople().Where(p => p.FirstName.StartsWith(partial, StringComparison.OrdinalIgnoreCase)).Select(p => p.FirstName).ToList();
 
             if (matches.Count == 1)
             {
@@ -98,13 +98,13 @@ namespace NamesManager
 
         private void SortPeople()
         {
-            people = people.OrderBy(p => p.FirstName).ToList();
+            peopleRepository.SetPeople(peopleRepository.GetAllPeople().OrderBy(p => p.FirstName).ToList());
         }
 
         private void RefreshListBox()
         {
             namesLst.Items.Clear();
-            foreach (var person in people)
+            foreach (var person in peopleRepository.GetAllPeople())
             {
                 namesLst.Items.Add(person.FirstName);
             }
